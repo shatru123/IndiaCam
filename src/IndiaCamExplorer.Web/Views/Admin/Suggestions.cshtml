@@ -1,0 +1,89 @@
+@model IEnumerable<CameraSuggestion>
+@{
+    ViewData["Title"] = "User Camera Suggestions";
+    var activeFilter = ViewBag.ActiveFilter as SuggestionStatus?;
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1 small">
+                <li class="breadcrumb-item"><a href="/Admin" class="text-secondary text-decoration-none">Admin</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">Suggestions</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-0 fs-2">User Camera Suggestions</h1>
+    </div>
+</div>
+
+<div class="container-xl py-4">
+    <div class="d-flex gap-2 mb-4">
+        <a href="/Admin/Suggestions" class="btn btn-sm @(!activeFilter.HasValue ? "btn-cyan" : "btn-surface")">All Suggestions</a>
+        <a href="/Admin/Suggestions?status=Pending" class="btn btn-sm @(activeFilter == SuggestionStatus.Pending ? "btn-cyan" : "btn-surface")">Pending</a>
+        <a href="/Admin/Suggestions?status=Approved" class="btn btn-sm @(activeFilter == SuggestionStatus.Approved ? "btn-cyan" : "btn-surface")">Approved</a>
+        <a href="/Admin/Suggestions?status=Rejected" class="btn btn-sm @(activeFilter == SuggestionStatus.Rejected ? "btn-cyan" : "btn-surface")">Rejected</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state-box">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h5 class="fw-bold mb-1">No suggestions in this queue</h5>
+            <p class="text-secondary small mb-0">Community submissions will appear here for administrator review.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var s in Model)
+            {
+                <div class="col-lg-6">
+                    <div class="card bg-surface border-secondary border-opacity-25 h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="fw-bold text-white mb-0">@s.Title</h5>
+                                <span class="badge @(s.Status == SuggestionStatus.Pending ? "bg-warning bg-opacity-25 text-warning" : (s.Status == SuggestionStatus.Approved ? "bg-success bg-opacity-25 text-success" : "bg-danger bg-opacity-25 text-danger"))">
+                                    @s.Status
+                                </span>
+                            </div>
+
+                            <div class="text-cyan small mb-3">
+                                <i class="bi bi-geo-alt me-1"></i>@s.City, @s.State
+                            </div>
+
+                            <div class="p-3 bg-card rounded-3 border border-secondary border-opacity-25 mb-3 small font-monospace">
+                                <div class="text-muted mb-1">Stream URL:</div>
+                                <div class="text-break text-cyan mb-2">@s.StreamUrl</div>
+                                <div class="text-muted mb-1">Source Website:</div>
+                                <div class="text-break text-white">@s.SourceUrl</div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(s.Notes))
+                            {
+                                <p class="text-secondary small mb-3">"@s.Notes"</p>
+                            }
+
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25 small">
+                                <span class="text-muted">By: @(string.IsNullOrEmpty(s.SubmitterName) ? "Anonymous" : s.SubmitterName) &bull; @s.CreatedAt.ToString("g")</span>
+                                <div class="d-flex gap-1">
+                                    <form action="/Admin/UpdateSuggestionStatus" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@s.Id" />
+                                        <button type="submit" name="status" value="Approved" class="btn btn-sm btn-surface text-success" title="Approve">
+                                            <i class="bi bi-check-lg"></i> Approve
+                                        </button>
+                                        <button type="submit" name="status" value="Rejected" class="btn btn-sm btn-surface text-danger" title="Reject">
+                                            <i class="bi bi-x-lg"></i> Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

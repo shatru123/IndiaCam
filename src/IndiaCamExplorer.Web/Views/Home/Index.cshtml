@@ -1,0 +1,260 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Explore India, Live.";
+}
+
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container-xl">
+        <div class="hero-tag">
+            <span class="status-dot pulse" style="background-color: var(--accent-cyan);"></span>
+            <span>Real-Time Public Streams & Viewpoints</span>
+        </div>
+
+        <h1 class="hero-title">
+            Explore <span>India, Live.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Immerse yourself in live temple darshans, Himalayan viewpoints, coastal horizons, and smart-city transit cams across 36 Indian States and Union Territories.
+        </p>
+
+        <!-- Hero Search -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-6 col-md-8">
+                <form action="/Cameras" method="get">
+                    <div class="input-group shadow-lg" style="border-radius: var(--radius-md); overflow: hidden;">
+                        <span class="input-group-text bg-surface border-0 text-cyan ps-3">
+                            <i class="bi bi-search fs-5"></i>
+                        </span>
+                        <input type="text" 
+                               name="Search" 
+                               class="form-control form-control-custom border-0 py-3 ps-2" 
+                               placeholder="Search Varanasi, Shimla, Somnath, traffic..." 
+                               aria-label="Search cameras">
+                        <button class="btn btn-cyan px-4" type="submit">
+                            Explore
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Category Pills -->
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+            <a href="/Cameras" class="btn btn-surface btn-sm"><i class="bi bi-collection me-1"></i> All Cameras</a>
+            @foreach (var cat in Model.Categories.Take(5))
+            {
+                <a href="/Cameras/Category/@cat.Slug" class="btn btn-surface btn-sm">
+                    @cat.Name (@cat.CameraCount)
+                </a>
+            }
+            <a href="/Map" class="btn btn-outline-cyan btn-sm"><i class="bi bi-map me-1"></i> Open Live Map</a>
+        </div>
+
+        <!-- Real-Time Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <i class="bi bi-camera-video-fill text-cyan"></i>
+                <span><span class="stat-value">@Model.TotalCameras</span> Verified Feeds</span>
+            </div>
+            <div class="stat-item">
+                <span class="status-dot pulse bg-success"></span>
+                <span><span class="stat-value">@Model.OnlineCameras</span> Streams Online</span>
+            </div>
+            <div class="stat-item">
+                <i class="bi bi-geo-alt-fill text-cyan"></i>
+                <span><span class="stat-value">@Model.TotalStates</span> States & UTs</span>
+            </div>
+            <div class="stat-item">
+                <i class="bi bi-shield-check text-cyan"></i>
+                <span><span class="stat-value">100%</span> Public & Authorized</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Live Streams -->
+<section class="py-5">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h6 class="text-uppercase text-cyan fw-bold small mb-1 tracking-wider">Live & Active</h6>
+                <h2 class="fw-bold mb-0">Featured Broadcasts</h2>
+            </div>
+            <a href="/Cameras" class="btn btn-outline-cyan btn-sm">
+                View All (@Model.TotalCameras) <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        @if (!Model.FeaturedCameras.Any())
+        {
+            <div class="empty-state-box">
+                <div class="empty-state-icon">
+                    <i class="bi bi-camera-video-off"></i>
+                </div>
+                <h5 class="fw-bold mb-2">No cameras online right now</h5>
+                <p class="text-secondary max-w-500 mx-auto mb-4">
+                    Our background monitors are verifying feeds or providers are awaiting synchronization.
+                </p>
+                <a href="/Suggest" class="btn btn-cyan btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Suggest a Public Stream
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var camera in Model.FeaturedCameras)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        @await Html.PartialAsync("_CameraCard", camera)
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Interactive Map Teaser Banner -->
+<section class="py-5 bg-surface border-top border-bottom border-secondary border-opacity-25">
+    <div class="container-xl">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <span class="hero-tag mb-2">
+                    <i class="bi bi-map-fill me-1"></i> Geographic Explorer
+                </span>
+                <h2 class="fw-bold mb-3">Live Geographic Map of India</h2>
+                <p class="text-secondary mb-4" style="line-height: 1.7;">
+                    Navigate live feeds pinpointed on an interactive Leaflet map across India's coastline, northern Himalayan passes, central spiritual hubs, and major metropolitan arteries. Filter by category or stream status with instantaneous feedback.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/Map" class="btn btn-cyan">
+                        <i class="bi bi-compass me-1"></i> Launch Interactive Map
+                    </a>
+                    <a href="/Cameras" class="btn btn-surface">
+                        <i class="bi bi-list-ul me-1"></i> Browse Catalog
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative p-2 rounded-4" style="background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: var(--card-shadow);">
+                    <div style="height: 280px; border-radius: var(--radius-md); overflow: hidden; background: #050811; display: flex; align-items: center; justify-content: center; position: relative;">
+                        <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&q=80" alt="India Map Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.45;" />
+                        <div class="position-absolute text-center p-3">
+                            <div class="status-dot pulse mx-auto mb-2" style="width: 14px; height: 14px; background: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-cyan);"></div>
+                            <h5 class="fw-bold text-white mb-1">Interactive Map Node Active</h5>
+                            <span class="badge bg-dark bg-opacity-75 text-cyan border border-cyan-subtle">
+                                <i class="bi bi-geo-alt me-1"></i> @Model.TotalCameras Live Markers Available
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Grid -->
+<section class="py-5">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h6 class="text-uppercase text-cyan fw-bold small mb-1 tracking-wider">Curated Channels</h6>
+                <h2 class="fw-bold mb-0">Browse by Category</h2>
+            </div>
+            <a href="/Categories" class="btn btn-outline-cyan btn-sm">
+                View All Categories <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var cat in Model.Categories)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <a href="/Cameras/Category/@cat.Slug" class="category-card">
+                        <div class="category-icon-box">
+                            @if (cat.Slug == "wildlife-nature") { <i class="bi bi-tree"></i> }
+                            else if (cat.Slug == "temples-heritage") { <i class="bi bi-bank"></i> }
+                            else if (cat.Slug == "traffic-transit") { <i class="bi bi-car-front"></i> }
+                            else if (cat.Slug == "coastal-beach") { <i class="bi bi-water"></i> }
+                            else if (cat.Slug == "mountain-hill-stations") { <i class="bi bi-snow"></i> }
+                            else if (cat.Slug == "city-viewpoints") { <i class="bi bi-buildings"></i> }
+                            else { <i class="bi bi-cloud-sun"></i> }
+                        </div>
+                        <h5 class="category-name">@cat.Name</h5>
+                        <p class="category-desc">@cat.Description</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-secondary border-opacity-25">
+                            <span class="category-count">@cat.CameraCount @(cat.CameraCount == 1 ? "stream" : "streams")</span>
+                            <span class="text-cyan small fw-semibold">Explore <i class="bi bi-chevron-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Browse by State & Union Territory -->
+<section class="py-5 bg-surface border-top border-secondary border-opacity-25">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h6 class="text-uppercase text-cyan fw-bold small mb-1 tracking-wider">Pan-India Coverage</h6>
+                <h2 class="fw-bold mb-0">States & Union Territories</h2>
+            </div>
+            <span class="text-muted small">@Model.TotalStates Administrative Divisions</span>
+        </div>
+
+        <div class="row g-2">
+            @foreach (var state in Model.StateSummaries.Take(16))
+            {
+                <div class="col-lg-3 col-md-4 col-6">
+                    <a href="/Cameras/State/@state.State" class="btn btn-surface w-100 text-start d-flex justify-content-between align-items-center py-2 px-3">
+                        <span class="text-truncate me-2">@state.State</span>
+                        @if (state.TotalCameras > 0)
+                        {
+                            <span class="badge bg-cyan bg-opacity-25 text-cyan border border-cyan-subtle">
+                                @state.TotalCameras
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge text-muted" style="font-size: 0.7rem;">0</span>
+                        }
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/Cameras" class="btn btn-outline-cyan btn-sm">
+                <i class="bi bi-grid-3x3-gap me-1"></i> View All States in Catalog
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Recently Added Streams -->
+<section class="py-5">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h6 class="text-uppercase text-cyan fw-bold small mb-1 tracking-wider">Fresh Feeds</h6>
+                <h2 class="fw-bold mb-0">Recently Added Cameras</h2>
+            </div>
+            <a href="/Cameras?SortBy=recent" class="btn btn-outline-cyan btn-sm">
+                View Recent <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var camera in Model.RecentlyAdded)
+            {
+                <div class="col-lg-4 col-md-6">
+                    @await Html.PartialAsync("_CameraCard", camera)
+                </div>
+            }
+        </div>
+    </div>
+</section>

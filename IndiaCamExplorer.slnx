@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IndiaCamExplorer.Core/IndiaCamExplorer.Core.csproj" />
+    <Project Path="src/IndiaCamExplorer.Infrastructure/IndiaCamExplorer.Infrastructure.csproj" />
+    <Project Path="src/IndiaCamExplorer.Web/IndiaCamExplorer.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IndiaCamExplorer.Tests/IndiaCamExplorer.Tests.csproj" />
+  </Folder>
+</Solution>

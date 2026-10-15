@@ -1,0 +1,133 @@
+@model PagedResult<Camera>
+@{
+    ViewData["Title"] = "Manage Cameras";
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? Enumerable.Empty<Category>();
+    var states = ViewBag.States as IEnumerable<string> ?? Enumerable.Empty<string>();
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a href="/Admin" class="text-secondary text-decoration-none">Admin</a></li>
+                        <li class="breadcrumb-item active text-cyan" aria-current="page">Cameras</li>
+                    </ol>
+                </nav>
+                <h1 class="fw-bold mb-0 fs-2">Camera Catalog Directory</h1>
+            </div>
+            <a href="/Admin/CreateCamera" class="btn btn-cyan btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Add Camera
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container-xl py-4">
+    <div class="card bg-surface border-secondary border-opacity-25 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0 align-middle">
+                    <thead class="border-secondary border-opacity-25 text-muted small text-uppercase">
+                        <tr>
+                            <th class="ps-3 py-3">Feed Info</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Protocol</th>
+                            <th>Health Status</th>
+                            <th>Active</th>
+                            <th class="text-end pe-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-secondary border-opacity-25">
+                        @foreach (var c in Model.Items)
+                        {
+                            <tr>
+                                <td class="ps-3 py-3">
+                                    <div class="fw-bold text-white">@c.Title</div>
+                                    <div class="text-muted small text-truncate" style="max-width: 250px;">
+                                        <a href="@c.SourceUrl" target="_blank" rel="noopener noreferrer" class="text-secondary text-decoration-none">
+                                            @c.Attribution <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-surface border border-secondary border-opacity-25 text-cyan">
+                                        @c.Category.Name
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="text-white small">@c.City</div>
+                                    <div class="text-muted small">@c.State</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark border border-secondary text-white font-monospace small">
+                                        @c.StreamType
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (c.HealthStatus == HealthStatus.Online)
+                                    {
+                                        <span class="badge bg-success bg-opacity-25 text-success border border-success-subtle">
+                                            <span class="status-dot pulse bg-success me-1"></span> ONLINE
+                                        </span>
+                                    }
+                                    else if (c.HealthStatus == HealthStatus.Degraded)
+                                    {
+                                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning-subtle">
+                                            DEGRADED
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger-subtle">
+                                            OFFLINE
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <form action="/Admin/ToggleCameraStatus/@c.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm p-0 border-0 text-white" title="Toggle active status">
+                                            @if (c.IsActive)
+                                            {
+                                                <i class="bi bi-toggle-on text-success fs-4"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-toggle-off text-muted fs-4"></i>
+                                            }
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="text-end pe-3">
+                                    <div class="btn-group btn-group-sm">
+                                        <form action="/Admin/RunHealthCheck/@c.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-surface" title="Run instant health check probe">
+                                                <i class="bi bi-activity text-cyan"></i>
+                                            </button>
+                                        </form>
+                                        <a href="/cameras/@c.Slug" target="_blank" class="btn btn-surface" title="View Public Page">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/Admin/EditCamera/@c.Id" class="btn btn-surface" title="Edit Camera">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form action="/Admin/DeleteCamera/@c.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this camera?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-surface text-danger" title="Delete Camera">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

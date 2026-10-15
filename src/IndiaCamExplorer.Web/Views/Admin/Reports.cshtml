@@ -1,0 +1,115 @@
+@model IEnumerable<BrokenStreamReport>
+@{
+    ViewData["Title"] = "Broken Stream Reports";
+    var activeFilter = ViewBag.ActiveFilter as ReportStatus?;
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1 small">
+                <li class="breadcrumb-item"><a href="/Admin" class="text-secondary text-decoration-none">Admin</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">Reports</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-0 fs-2">Broken Stream Reports</h1>
+    </div>
+</div>
+
+<div class="container-xl py-4">
+    <div class="d-flex gap-2 mb-4">
+        <a href="/Admin/Reports" class="btn btn-sm @(!activeFilter.HasValue ? "btn-cyan" : "btn-surface")">All Reports</a>
+        <a href="/Admin/Reports?status=Pending" class="btn btn-sm @(activeFilter == ReportStatus.Pending ? "btn-cyan" : "btn-surface")">Pending</a>
+        <a href="/Admin/Reports?status=Resolved" class="btn btn-sm @(activeFilter == ReportStatus.Resolved ? "btn-cyan" : "btn-surface")">Resolved</a>
+        <a href="/Admin/Reports?status=Dismissed" class="btn btn-sm @(activeFilter == ReportStatus.Dismissed ? "btn-cyan" : "btn-surface")">Dismissed</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state-box">
+            <div class="empty-state-icon text-success" style="background: rgba(16, 185, 129, 0.1);">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h5 class="fw-bold mb-1">No stream reports in this queue</h5>
+            <p class="text-secondary small mb-0">No viewers have flagged issues matching this status.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card bg-surface border-secondary border-opacity-25">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0 align-middle">
+                    <thead class="text-muted small text-uppercase border-secondary border-opacity-25">
+                        <tr>
+                            <th class="ps-3 py-3">Report ID</th>
+                            <th>Camera Feed</th>
+                            <th>Reported Reason</th>
+                            <th>Submitter Notes</th>
+                            <th>Status</th>
+                            <th>Reported Date</th>
+                            <th class="text-end pe-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-secondary border-opacity-25">
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 py-3 font-monospace">#@r.Id</td>
+                                <td>
+                                    <a href="/cameras/@r.Camera.Slug" target="_blank" class="text-white fw-bold text-decoration-none">
+                                        @r.Camera.Title
+                                    </a>
+                                    <div class="text-muted small">@r.Camera.City, @r.Camera.State</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger bg-opacity-25 text-danger border border-danger-subtle">
+                                        @r.Reason
+                                    </span>
+                                </td>
+                                <td class="text-secondary small" style="max-width: 250px;">
+                                    @(string.IsNullOrEmpty(r.Notes) ? "—" : r.Notes)
+                                </td>
+                                <td>
+                                    @if (r.Status == ReportStatus.Pending)
+                                    {
+                                        <span class="badge bg-warning bg-opacity-25 text-warning">Pending</span>
+                                    }
+                                    else if (r.Status == ReportStatus.Resolved)
+                                    {
+                                        <span class="badge bg-success bg-opacity-25 text-success">Resolved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary text-white">@r.Status</span>
+                                    }
+                                </td>
+                                <td class="text-muted small">@r.ReportedAt.ToString("g") UTC</td>
+                                <td class="text-end pe-3">
+                                    <form action="/Admin/UpdateReportStatus" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@r.Id" />
+                                        @if (r.Status == ReportStatus.Pending)
+                                        {
+                                            <button type="submit" name="status" value="Resolved" class="btn btn-sm btn-surface text-success" title="Mark Resolved">
+                                                <i class="bi bi-check-lg"></i>
+                                            </button>
+                                            <button type="submit" name="status" value="Dismissed" class="btn btn-sm btn-surface text-danger" title="Dismiss">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" name="status" value="Pending" class="btn btn-sm btn-surface text-warning" title="Reopen">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </button>
+                                        }
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

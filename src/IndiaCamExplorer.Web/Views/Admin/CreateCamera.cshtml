@@ -1,0 +1,126 @@
+@model AdminCameraEditModel
+@{
+    ViewData["Title"] = "Add New Public Camera";
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? Enumerable.Empty<Category>();
+    var states = ViewBag.States as IEnumerable<string> ?? Enumerable.Empty<string>();
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1 small">
+                <li class="breadcrumb-item"><a href="/Admin" class="text-secondary text-decoration-none">Admin</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/Cameras" class="text-secondary text-decoration-none">Cameras</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">Add Camera</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-0 fs-2">Add New Public Camera Feed</h1>
+    </div>
+</div>
+
+<div class="container-xl py-4">
+    <div class="card bg-surface border-secondary border-opacity-25 shadow-lg max-w-800 mx-auto">
+        <div class="card-body p-4 p-md-5">
+            <form method="post" action="/Admin/CreateCamera">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <label asp-for="Title" class="form-label small fw-semibold">Feed Title *</label>
+                        <input asp-for="Title" class="form-control form-control-custom" required />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Slug" class="form-label small fw-semibold">URL Slug *</label>
+                        <input asp-for="Slug" class="form-control form-control-custom" placeholder="e.g. shree-somnath-live" required />
+                        <span asp-validation-for="Slug" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label small fw-semibold">Description</label>
+                    <textarea asp-for="Description" class="form-control form-control-custom" rows="2"></textarea>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="CategoryId" class="form-label small fw-semibold">Category *</label>
+                        <select asp-for="CategoryId" class="form-select form-select-custom" required>
+                            @foreach (var c in categories)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="State" class="form-label small fw-semibold">State / UT *</label>
+                        <select asp-for="State" class="form-select form-select-custom" required>
+                            @foreach (var s in states)
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label small fw-semibold">City *</label>
+                        <input asp-for="City" class="form-control form-control-custom" required />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Latitude" class="form-label small fw-semibold">Latitude *</label>
+                        <input asp-for="Latitude" type="number" step="0.0001" class="form-control form-control-custom" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Longitude" class="form-label small fw-semibold">Longitude *</label>
+                        <input asp-for="Longitude" type="number" step="0.0001" class="form-control form-control-custom" required />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <label asp-for="StreamUrl" class="form-label small fw-semibold">Stream / Playback URL *</label>
+                        <input asp-for="StreamUrl" class="form-control form-control-custom font-monospace small" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="StreamType" class="form-label small fw-semibold">Stream Type *</label>
+                        <select asp-for="StreamType" class="form-select form-select-custom">
+                            <option value="Hls">HLS (.m3u8)</option>
+                            <option value="OfficialEmbed">Official Embed (YouTube/Iframe)</option>
+                            <option value="Snapshot">Snapshot (Refreshing Image)</option>
+                            <option value="Direct">Direct Video</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="SourceUrl" class="form-label small fw-semibold">Official Source Website *</label>
+                        <input asp-for="SourceUrl" class="form-control form-control-custom font-monospace small" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Attribution" class="form-label small fw-semibold">Attribution Authority *</label>
+                        <input asp-for="Attribution" class="form-control form-control-custom" placeholder="e.g. Uttarakhand Tourism" required />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ThumbnailUrl" class="form-label small fw-semibold">Thumbnail URL (Optional)</label>
+                    <input asp-for="ThumbnailUrl" class="form-control form-control-custom font-monospace small" />
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/Admin/Cameras" class="btn btn-surface">Cancel</a>
+                    <button type="submit" class="btn btn-cyan px-4">
+                        <i class="bi bi-save me-1"></i> Save Camera
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

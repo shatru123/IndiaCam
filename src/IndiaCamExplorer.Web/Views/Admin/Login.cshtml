@@ -1,0 +1,57 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Admin Login";
+}
+
+<div class="container-xl py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-sm-8">
+            <div class="card bg-surface border-secondary border-opacity-25 shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="brand-dot mx-auto mb-2" style="width: 14px; height: 14px;"></div>
+                        <h4 class="fw-bold mb-1">Administrator Sign In</h4>
+                        <p class="text-secondary small">Authenticate to manage feeds and providers</p>
+                    </div>
+
+                    <form method="post" action="/Admin/Login">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label small fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-input border-secondary border-opacity-25 text-muted">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input asp-for="Username" class="form-control form-control-custom" placeholder="admin" required autofocus />
+                            </div>
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label small fw-semibold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-input border-secondary border-opacity-25 text-muted">
+                                    <i class="bi bi-key"></i>
+                                </span>
+                                <input asp-for="Password" class="form-control form-control-custom" placeholder="••••••••" required />
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input asp-for="RememberMe" class="form-check-input" />
+                            <label asp-for="RememberMe" class="form-check-label small text-secondary">Remember me on this browser</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-cyan w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Dashboard
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

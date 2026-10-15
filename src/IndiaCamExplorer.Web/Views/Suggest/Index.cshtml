@@ -1,0 +1,107 @@
+@model CameraSuggestionRequest
+@{
+    ViewData["Title"] = "Submit a Public Camera Feed";
+    var states = ViewBag.States as IEnumerable<string> ?? Enumerable.Empty<string>();
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2 small">
+                <li class="breadcrumb-item"><a href="/" class="text-secondary text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">Submit Stream</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-1 fs-2">Suggest a Public Camera Feed</h1>
+        <p class="text-secondary mb-0 small">
+            Know of a legitimate tourism livestream, official temple trust darshan, or open municipal traffic camera in India? Contribute it to our public directory.
+        </p>
+    </div>
+</div>
+
+<div class="container-xl py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card bg-surface border-secondary border-opacity-25 shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <!-- Ethical Notice Alert -->
+                    <div class="alert alert-info bg-info bg-opacity-10 border-info border-opacity-25 text-info d-flex gap-3 align-items-start mb-4" role="alert">
+                        <i class="bi bi-shield-lock-fill fs-4 mt-1"></i>
+                        <div class="small" style="line-height: 1.6;">
+                            <strong>Verification & Ethics Policy:</strong> IndiaCam Explorer indexes only publicly authorized broadcasts (tourism boards, temple trusts, smart city open data). Submissions of private security cameras, residential CCTV, or feeds requiring credential bypass will be permanently rejected.
+                        </div>
+                    </div>
+
+                    <form method="post" action="/Suggest">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label small fw-semibold">Camera / Viewpoint Title *</label>
+                            <input asp-for="Title" class="form-control form-control-custom" placeholder="e.g. Somnath Temple Sea Horizon, Marine Drive Viewpoint" required />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="State" class="form-label small fw-semibold">State or Union Territory *</label>
+                                <select asp-for="State" class="form-select form-select-custom" required>
+                                    <option value="">Select State / UT...</option>
+                                    @foreach (var s in states)
+                                    {
+                                        <option value="@s">@s</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="State" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="City" class="form-label small fw-semibold">City or Landmark *</label>
+                                <input asp-for="City" class="form-control form-control-custom" placeholder="e.g. Varanasi, Haridwar, Mumbai" required />
+                                <span asp-validation-for="City" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StreamUrl" class="form-label small fw-semibold">Stream / Playback URL *</label>
+                            <input asp-for="StreamUrl" class="form-control form-control-custom font-monospace small" placeholder="https://... (.m3u8, YouTube live embed, or snapshot endpoint)" required />
+                            <div class="form-text text-muted small">Must be a public HTTPS URL. YouTube live stream embeds or .m3u8 HLS streams are supported.</div>
+                            <span asp-validation-for="StreamUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SourceUrl" class="form-label small fw-semibold">Official Source / Broadcaster Webpage *</label>
+                            <input asp-for="SourceUrl" class="form-control form-control-custom font-monospace small" placeholder="https://... (official tourism or temple trust website)" required />
+                            <div class="form-text text-muted small">Where this stream is officially broadcasted or authorized.</div>
+                            <span asp-validation-for="SourceUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="SubmitterName" class="form-label small fw-semibold">Your Name (Optional)</label>
+                                <input asp-for="SubmitterName" class="form-control form-control-custom" placeholder="Shatrughna" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="SubmitterEmail" class="form-label small fw-semibold">Your Email (Optional)</label>
+                                <input asp-for="SubmitterEmail" class="form-control form-control-custom" placeholder="name@example.com" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label small fw-semibold">Additional Context or Verification Notes</label>
+                            <textarea asp-for="Notes" class="form-control form-control-custom" rows="3" placeholder="Operating hours, broadcast frequency, or authorization details..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/" class="btn btn-surface">Cancel</a>
+                            <button type="submit" class="btn btn-cyan px-4">
+                                <i class="bi bi-send me-1"></i> Submit for Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

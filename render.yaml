@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: indiacam-explorer
+    runtime: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: PORT
+        value: 10000
+      - key: AdminSettings__Username
+        value: admin
+      - key: AdminSettings__Password
+        generateValue: true

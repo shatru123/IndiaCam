@@ -1,0 +1,176 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <span class="badge bg-danger bg-opacity-25 text-danger border border-danger-subtle mb-1">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Admin Console
+                </span>
+                <h1 class="fw-bold mb-0 fs-2">Operations & Stream Governance</h1>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/Admin/CreateCamera" class="btn btn-cyan btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Add Camera
+                </a>
+                <form action="/Admin/TriggerSync" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-cyan btn-sm">
+                        <i class="bi bi-arrow-repeat me-1"></i> Run Provider Sync
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-xl py-4">
+    <!-- Metric Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-sm-6">
+            <div class="card bg-surface border-secondary border-opacity-25 p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-semibold">TOTAL CAMERAS</div>
+                        <h2 class="fw-bold text-white mb-0">@Model.TotalCameras</h2>
+                    </div>
+                    <div class="p-3 rounded bg-cyan bg-opacity-10 text-cyan fs-4">
+                        <i class="bi bi-camera-video"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card bg-surface border-secondary border-opacity-25 p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-semibold">STREAMS ONLINE</div>
+                        <h2 class="fw-bold text-success mb-0">@Model.OnlineCameras</h2>
+                    </div>
+                    <div class="p-3 rounded bg-success bg-opacity-10 text-success fs-4">
+                        <i class="bi bi-broadcast"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card bg-surface border-secondary border-opacity-25 p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-semibold">PENDING REPORTS</div>
+                        <h2 class="fw-bold text-danger mb-0">@Model.PendingReports</h2>
+                    </div>
+                    <div class="p-3 rounded bg-danger bg-opacity-10 text-danger fs-4">
+                        <i class="bi bi-flag"></i>
+                    </div>
+                </div>
+                <a href="/Admin/Reports" class="text-cyan small mt-2 d-inline-block text-decoration-none">Review Reports &rarr;</a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card bg-surface border-secondary border-opacity-25 p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-semibold">NEW SUGGESTIONS</div>
+                        <h2 class="fw-bold text-warning mb-0">@Model.PendingSuggestions</h2>
+                    </div>
+                    <div class="p-3 rounded bg-warning bg-opacity-10 text-warning fs-4">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+                </div>
+                <a href="/Admin/Suggestions" class="text-cyan small mt-2 d-inline-block text-decoration-none">Review Suggestions &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Subtabs -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="/Admin/Cameras" class="btn btn-surface btn-sm"><i class="bi bi-camera-video me-1"></i> Cameras List</a>
+        <a href="/Admin/Providers" class="btn btn-surface btn-sm"><i class="bi bi-cloud-arrow-down me-1"></i> Source Providers (@Model.Providers.Count())</a>
+        <a href="/Admin/Reports" class="btn btn-surface btn-sm"><i class="bi bi-flag me-1"></i> Broken Reports (@Model.PendingReports)</a>
+        <a href="/Admin/Suggestions" class="btn btn-surface btn-sm"><i class="bi bi-inbox me-1"></i> Suggestions (@Model.PendingSuggestions)</a>
+    </div>
+
+    <!-- Recent Reports & Cameras Row -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card bg-surface border-secondary border-opacity-25">
+                <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0 text-white"><i class="bi bi-flag text-danger me-2"></i> Recent Broken Stream Reports</h6>
+                    <a href="/Admin/Reports" class="text-cyan small text-decoration-none">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.RecentReports.Any())
+                    {
+                        <div class="p-4 text-center text-muted small">
+                            <i class="bi bi-check2-circle fs-3 text-success d-block mb-1"></i>
+                            No reports logged. All streams healthy!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush bg-transparent">
+                            @foreach (var r in Model.RecentReports)
+                            {
+                                <div class="list-group-item bg-transparent border-secondary border-opacity-25 text-white p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger-subtle">
+                                            @r.Reason
+                                        </span>
+                                        <span class="text-muted small">@r.ReportedAt.ToString("g")</span>
+                                    </div>
+                                    <div class="fw-semibold small">@r.Camera.Title</div>
+                                    @if (!string.IsNullOrEmpty(r.Notes))
+                                    {
+                                        <div class="text-secondary small mt-1">"@r.Notes"</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card bg-surface border-secondary border-opacity-25">
+                <div class="card-header bg-transparent border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0 text-white"><i class="bi bi-camera-video text-cyan me-2"></i> Recently Added Cameras</h6>
+                    <a href="/Admin/Cameras" class="text-cyan small text-decoration-none">Manage All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush bg-transparent">
+                        @foreach (var c in Model.RecentCameras.Take(5))
+                        {
+                            <div class="list-group-item bg-transparent border-secondary border-opacity-25 text-white p-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-semibold small">@c.Title</div>
+                                    <div class="text-muted small">@c.City, @c.State &bull; <span class="text-cyan">@c.Category.Name</span></div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (c.HealthStatus == HealthStatus.Online)
+                                    {
+                                        <span class="badge bg-success bg-opacity-25 text-success">ONLINE</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-25 text-danger">OFFLINE</span>
+                                    }
+                                    <a href="/Admin/EditCamera/@c.Id" class="btn btn-surface btn-sm" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

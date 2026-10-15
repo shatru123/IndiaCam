@@ -1,0 +1,145 @@
+@{
+    ViewData["Title"] = "My Favorited Feeds";
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2 small">
+                <li class="breadcrumb-item"><a href="/" class="text-secondary text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">Favorites</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-1 fs-2">My Favorite Cameras</h1>
+                <p class="text-secondary mb-0 small">
+                    Your personal live dashboard, stored securely in your browser.
+                </p>
+            </div>
+            <button id="btn-clear-favorites" class="btn btn-surface btn-sm text-danger" style="display:none;">
+                <i class="bi bi-trash me-1"></i> Clear All
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container-xl py-5">
+    <div id="favorites-loading" class="text-center py-5">
+        <div class="spinner-border text-cyan mb-2" role="status"></div>
+        <p class="text-secondary small">Loading your favorite cameras...</p>
+    </div>
+
+    <div id="favorites-empty" class="empty-state-box" style="display: none;">
+        <div class="empty-state-icon">
+            <i class="bi bi-heart"></i>
+        </div>
+        <h4 class="fw-bold mb-2">No favorites saved yet</h4>
+        <p class="text-secondary max-w-500 mx-auto mb-4">
+            Click the heart icon on any camera card or player page to pin your favorite spiritual, coastal, or mountain live streams here.
+        </p>
+        <a href="/Cameras" class="btn btn-cyan btn-sm">
+            <i class="bi bi-grid me-1"></i> Browse Cameras
+        </a>
+    </div>
+
+    <div id="favorites-grid" class="row g-4" style="display: none;">
+        <!-- Injected via JavaScript from /api/cameras/favorites -->
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loading = document.getElementById('favorites-loading');
+            const empty = document.getElementById('favorites-empty');
+            const grid = document.getElementById('favorites-grid');
+            const clearBtn = document.getElementById('btn-clear-favorites');
+
+            async function loadFavorites() {
+                const favIds = window.getFavorites();
+                if (favIds.length === 0) {
+                    loading.style.display = 'none';
+                    empty.style.display = 'block';
+                    grid.style.display = 'none';
+                    clearBtn.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/api/cameras/favorites', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(favIds)
+                    });
+
+                    if (res.ok) {
+                        const cameras = await res.json();
+                        loading.style.display = 'none';
+
+                        if (cameras.length === 0) {
+                            empty.style.display = 'block';
+                            grid.style.display = 'none';
+                            clearBtn.style.display = 'none';
+                            return;
+                        }
+
+                        grid.innerHTML = '';
+                        cameras.forEach(cam => {
+                            const isOnline = cam.healthStatus === 1;
+                            const statusHtml = isOnline
+                                ? '<span class="badge-status online"><span class="status-dot pulse"></span> LIVE</span>'
+                                : '<span class="badge-status offline"><span class="status-dot"></span> OFFLINE</span>';
+
+                            const col = document.createElement('div');
+                            col.className = 'col-lg-4 col-md-6';
+                            col.innerHTML = `
+                                <div class="cam-card">
+                                    <div class="cam-card-media">
+                                        <a href="/cameras/${cam.slug}">
+                                            <img class="cam-card-img" src="${cam.thumbnailUrl || 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80'}" alt="${cam.title}" />
+                                        </a>
+                                        <div class="cam-badges-overlay">
+                                            <div class="d-flex align-items-center gap-1">
+                                                ${statusHtml}
+                                            </div>
+                                            <button class="btn-favorite-heart active" data-camera-id="${cam.id}" data-camera-title="${cam.title}">
+                                                <i class="bi bi-heart-fill"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="cam-card-body">
+                                        <div class="cam-meta-tag"><i class="bi bi-geo-alt-fill"></i> ${cam.city}, ${cam.state}</div>
+                                        <a href="/cameras/${cam.slug}" class="cam-title">${cam.title}</a>
+                                        <div class="cam-footer">
+                                            <span class="cam-attribution"><i class="bi bi-shield-check text-cyan me-1"></i>${cam.attribution}</span>
+                                            <a href="/cameras/${cam.slug}" class="text-cyan fw-bold text-decoration-none">Watch <i class="bi bi-arrow-right"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            grid.appendChild(col);
+                        });
+
+                        empty.style.display = 'none';
+                        grid.style.display = 'flex';
+                        clearBtn.style.display = 'inline-block';
+                    }
+                } catch (err) {
+                    loading.innerHTML = '<p class="text-danger">Failed to load favorites.</p>';
+                }
+            }
+
+            clearBtn?.addEventListener('click', () => {
+                if (confirm('Clear all favorites?')) {
+                    localStorage.removeItem('indiacam_favorites');
+                    loadFavorites();
+                    window.showToast('Cleared all favorites', 'info');
+                }
+            });
+
+            window.addEventListener('indiacam:favoriteschanged', loadFavorites);
+            loadFavorites();
+        });
+    </script>
+}

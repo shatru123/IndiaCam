@@ -1,0 +1,81 @@
+@{
+    ViewData["Title"] = "Interactive Live Map of India";
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? Enumerable.Empty<Category>();
+    var states = ViewBag.States as IEnumerable<string> ?? Enumerable.Empty<string>();
+}
+
+<div class="container-xl py-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+        <div>
+            <h1 class="fw-bold mb-0 fs-3">Interactive India Live Map</h1>
+            <p class="text-secondary mb-0 small">
+                Explore real-time viewpoints and coastal webcams across India. Click pins to preview feeds.
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge bg-surface border border-secondary border-opacity-25 text-white d-flex align-items-center gap-1 px-3 py-2">
+                <span class="status-dot pulse bg-success"></span>
+                <span id="map-visible-count">0</span> Cameras Mapped
+            </span>
+            <a href="/Cameras" class="btn btn-surface btn-sm">
+                <i class="bi bi-grid me-1"></i> List View
+            </a>
+        </div>
+    </div>
+
+    <!-- Map Viewport Container -->
+    <div class="position-relative">
+        <div id="india-map-container"></div>
+
+        <!-- Overlaid Map Filters -->
+        <div class="map-control-card">
+            <h6 class="fw-bold mb-2 small text-uppercase text-cyan">
+                <i class="bi bi-funnel me-1"></i> Map Filters
+            </h6>
+
+            <div class="mb-2">
+                <label class="form-label small text-muted mb-1">Category</label>
+                <select id="map-filter-category" class="form-select form-select-custom form-select-sm">
+                    <option value="">All Categories</option>
+                    @foreach (var c in categories)
+                    {
+                        <option value="@c.Name">@c.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label small text-muted mb-1">State / UT</label>
+                <select id="map-filter-state" class="form-select form-select-custom form-select-sm">
+                    <option value="">All States</option>
+                    @foreach (var s in states)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small text-muted mb-1">Status</label>
+                <select id="map-filter-status" class="form-select form-select-custom form-select-sm">
+                    <option value="">All Statuses</option>
+                    <option value="online">Online Only</option>
+                    <option value="offline">Offline Only</option>
+                </select>
+            </div>
+
+            <button id="map-btn-reset" class="btn btn-surface btn-sm w-100">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset View
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/map.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.initIndiaMap('india-map-container');
+        });
+    </script>
+}

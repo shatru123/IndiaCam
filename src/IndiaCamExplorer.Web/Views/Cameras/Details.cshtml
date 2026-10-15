@@ -1,0 +1,262 @@
+@model CameraDetailViewModel
+@{
+    ViewData["Title"] = Model.Camera.Title;
+}
+
+<div class="py-3 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="/" class="text-secondary text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="/Cameras" class="text-secondary text-decoration-none">Cameras</a></li>
+                <li class="breadcrumb-item"><a href="/Cameras/Category/@Model.Camera.Category.Slug" class="text-secondary text-decoration-none">@Model.Camera.Category.Name</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">@Model.Camera.Title</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div id="player-layout-wrapper" class="container-xl py-4">
+    <div class="row g-4">
+        <!-- Main Player Column -->
+        <div class="col-lg-8">
+            <!-- Video / Feed Viewport -->
+            <div id="player-viewport" class="player-container mb-3">
+                <!-- Injected dynamically via player.js -->
+            </div>
+
+            <!-- Player Action Bar -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 p-3 bg-surface rounded-3 border border-secondary border-opacity-25">
+                <!-- Status & Badges -->
+                <div class="d-flex align-items-center gap-2">
+                    @if (Model.Camera.HealthStatus == HealthStatus.Online)
+                    {
+                        <span class="badge-status online">
+                            <span class="status-dot pulse"></span> LIVE STREAM
+                        </span>
+                    }
+                    else if (Model.Camera.HealthStatus == HealthStatus.Degraded)
+                    {
+                        <span class="badge-status degraded">
+                            <span class="status-dot"></span> HIGH LATENCY
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge-status offline">
+                            <span class="status-dot"></span> CURRENTLY OFFLINE
+                        </span>
+                    }
+
+                    <span class="badge-stream-type">@Model.Camera.StreamType.ToString().ToUpperInvariant()</span>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="d-flex align-items-center gap-2">
+                    <button id="btn-theater-mode" class="btn btn-surface btn-sm" title="Toggle Theater Mode">
+                        <i class="bi bi-aspect-ratio"></i>
+                    </button>
+                    <button id="btn-fullscreen" class="btn btn-surface btn-sm" title="Toggle Fullscreen">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </button>
+                    <button class="btn btn-surface btn-sm btn-favorite-heart" 
+                            data-camera-id="@Model.Camera.Id" 
+                            data-camera-title="@Model.Camera.Title"
+                            title="Add to Favorites">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                    <button class="btn btn-surface btn-sm" 
+                            onclick="window.copyToClipboard(window.location.href, 'Camera URL copied to clipboard!')"
+                            title="Share Feed">
+                        <i class="bi bi-share"></i>
+                    </button>
+                    <button class="btn btn-surface btn-sm text-danger" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#reportStreamModal"
+                            title="Report Stream Issue">
+                        <i class="bi bi-flag"></i> Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Camera Description & Details -->
+            <div class="mb-4">
+                <h1 class="fw-bold mb-2 fs-3">@Model.Camera.Title</h1>
+                <div class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-3">
+                    <span><i class="bi bi-geo-alt text-cyan me-1"></i>@Model.Camera.City, @Model.Camera.State</span>
+                    <span><i class="bi bi-collection text-cyan me-1"></i>@Model.Camera.Category.Name</span>
+                    <span><i class="bi bi-shield-check text-cyan me-1"></i>@Model.Camera.Attribution</span>
+                    @if (Model.Camera.LastCheckedAt.HasValue)
+                    {
+                        <span><i class="bi bi-clock-history me-1"></i>Checked @Model.Camera.LastCheckedAt.Value.ToString("g") UTC</span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Camera.Description))
+                {
+                    <p class="text-secondary" style="line-height: 1.7; font-size: 0.95rem;">
+                        @Model.Camera.Description
+                    </p>
+                }
+            </div>
+
+            <!-- Recent Health Check History -->
+            <div class="card bg-surface border-secondary border-opacity-25 mb-4">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold mb-0 small text-uppercase text-cyan">Automated Health Probes (Recent)</h6>
+                        <span class="text-muted small">Checked every 10 mins</span>
+                    </div>
+
+                    @if (!Model.RecentHealthChecks.Any())
+                    {
+                        <p class="text-secondary small mb-0">Initial health check will record shortly.</p>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                            @foreach (var check in Model.RecentHealthChecks.Take(12))
+                            {
+                                var pillClass = check.Status == HealthStatus.Online ? "online" : (check.Status == HealthStatus.Degraded ? "degraded" : "offline");
+                                <div class="health-pill @pillClass" 
+                                     data-bs-toggle="tooltip" 
+                                     title="@check.CheckedAt.ToString("HH:mm:ss") UTC - @check.Status (@check.ResponseTimeMs ms)">
+                                </div>
+                            }
+                        </div>
+                        <div class="d-flex gap-3 text-muted small" style="font-size: 0.75rem;">
+                            <span><span class="d-inline-block rounded-circle bg-success me-1" style="width:8px; height:8px;"></span> Online (&lt; 2.5s)</span>
+                            <span><span class="d-inline-block rounded-circle bg-warning me-1" style="width:8px; height:8px;"></span> Degraded (Latency/Redirect)</span>
+                            <span><span class="d-inline-block rounded-circle bg-danger me-1" style="width:8px; height:8px;"></span> Offline (Unreachable)</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Metadata Column -->
+        <div class="col-lg-4">
+            <!-- Attribution & Authority Card -->
+            <div class="card bg-surface border-secondary border-opacity-25 mb-4">
+                <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                    <h6 class="fw-bold mb-0 text-cyan small text-uppercase">
+                        <i class="bi bi-shield-check me-1"></i> Verified Broadcaster Info
+                    </h6>
+                </div>
+                <div class="card-body p-3">
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-3 small">
+                        <li>
+                            <div class="text-muted mb-1">Broadcaster / Attribution</div>
+                            <div class="fw-semibold text-white">@Model.Camera.Attribution</div>
+                        </li>
+                        <li>
+                            <div class="text-muted mb-1">Official Source Webpage</div>
+                            <a href="@Model.Camera.SourceUrl" target="_blank" rel="noopener noreferrer" class="text-cyan text-break text-decoration-none">
+                                @Model.Camera.SourceUrl <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="text-muted mb-1">Geographic Coordinates</div>
+                            <div class="font-monospace text-secondary">
+                                @Model.Camera.Latitude.ToString("F4")° N, @Model.Camera.Longitude.ToString("F4")° E
+                            </div>
+                        </li>
+                        <li>
+                            <div class="text-muted mb-1">Stream Protocol</div>
+                            <span class="badge bg-dark border border-secondary text-cyan">
+                                @Model.Camera.StreamType
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Related Feeds in Same Category -->
+            @if (Model.RelatedCameras.Any())
+            {
+                <div class="card bg-surface border-secondary border-opacity-25">
+                    <div class="card-header bg-transparent border-secondary border-opacity-25 py-3">
+                        <h6 class="fw-bold mb-0 text-cyan small text-uppercase">
+                            More in @Model.Camera.Category.Name
+                        </h6>
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column gap-3">
+                        @foreach (var related in Model.RelatedCameras)
+                        {
+                            <div class="d-flex gap-3 align-items-center">
+                                <img src="@(string.IsNullOrEmpty(related.ThumbnailUrl) ? "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=200&q=80" : related.ThumbnailUrl)" 
+                                     alt="@related.Title" 
+                                     class="rounded object-fit-cover" 
+                                     style="width: 72px; height: 50px;" />
+                                <div class="overflow-hidden">
+                                    <a href="/cameras/@related.Slug" class="fw-semibold text-white text-decoration-none text-truncate d-block small mb-1">
+                                        @related.Title
+                                    </a>
+                                    <span class="text-muted small">@related.City, @related.State</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Broken Stream Report Modal -->
+<div class="modal fade" id="reportStreamModal" tabindex="-1" aria-labelledby="reportStreamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-surface border border-secondary border-opacity-50 text-white">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title fw-bold" id="reportStreamModalLabel">
+                    <i class="bi bi-flag-fill text-danger me-2"></i> Report Broken Stream
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="report-stream-form">
+                <div class="modal-body">
+                    <p class="text-secondary small mb-3">
+                        Help maintain IndiaCam Explorer reliability. Our automated health monitors and administrators review all broken feed reports.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Reason for Report *</label>
+                        <select name="Reason" class="form-select form-select-custom form-select-sm" required>
+                            <option value="Stream Offline / Blank Screen">Stream Offline / Blank Screen</option>
+                            <option value="Audio Only / No Video">Audio Only / No Video</option>
+                            <option value="Stream Link Broken / 404">Stream Link Broken / 404</option>
+                            <option value="Incorrect Location / Info">Incorrect Location / Metadata</option>
+                            <option value="Private Feed (Infringement)">Private Feed / Copyright Claim</option>
+                            <option value="Other">Other Issue</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Additional Details (Optional)</label>
+                        <textarea name="Notes" class="form-control form-control-custom form-control-sm" rows="3" placeholder="Describe any error messages or details..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-surface btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-cyan btn-sm">
+                        <i class="bi bi-send me-1"></i> Submit Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/player.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.initIndiaCamPlayer({
+                cameraId: @Model.Camera.Id,
+                streamUrl: '@Html.Raw(Model.Camera.StreamUrl)',
+                streamType: '@Model.Camera.StreamType',
+                isOffline: @(Model.Camera.HealthStatus == HealthStatus.Offline ? "true" : "false")
+            });
+        });
+    </script>
+}

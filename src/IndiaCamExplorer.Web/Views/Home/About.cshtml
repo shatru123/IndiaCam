@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "About IndiaCam Explorer";
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2 small">
+                <li class="breadcrumb-item"><a href="/" class="text-secondary text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active text-cyan" aria-current="page">About</li>
+            </ol>
+        </nav>
+        <h1 class="fw-bold mb-1 fs-2">About IndiaCam Explorer</h1>
+        <p class="text-secondary mb-0 small">Explore India, Live. A transparent, high-performance portal for verified public streams.</p>
+    </div>
+</div>
+
+<div class="container-xl py-5">
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <section class="mb-5">
+                <h3 class="fw-bold text-white mb-3">Our Mission</h3>
+                <p class="text-secondary" style="line-height: 1.8;">
+                    India is a land of extraordinary diversity — from the snow-clad peaks of the Himalayas to the tropical backwaters of Kerala, and from sacred dawn Aartis along the ancient Ghats of Varanasi to the bustling tech corridors of Bengaluru. <strong>IndiaCam Explorer</strong> was created to curate, organize, and monitor legitimate publicly accessible webcams and livestreams across all 28 States and 8 Union Territories in one unified, modern interface.
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h3 class="fw-bold text-white mb-3">Strict Ethical & Security Standards</h3>
+                <div class="card bg-surface border-secondary border-opacity-25 mb-4">
+                    <div class="card-body p-4">
+                        <ul class="list-unstyled mb-0 d-flex flex-column gap-3 text-secondary" style="line-height: 1.7;">
+                            <li class="d-flex gap-2">
+                                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                <div><strong>100% Authorized & Public:</strong> We only catalog streams openly published by state tourism corporations, religious trusts, public broadcasters, or municipal authorities.</div>
+                            </li>
+                            <li class="d-flex gap-2">
+                                <i class="bi bi-x-circle-fill text-danger fs-5"></i>
+                                <div><strong>Zero Private Surveillance:</strong> We never scan IP ranges, connect to unsecured private CCTV, bypass authentication, or index non-public cameras.</div>
+                            </li>
+                            <li class="d-flex gap-2">
+                                <i class="bi bi-shield-lock-fill text-cyan fs-5"></i>
+                                <div><strong>SSRF & Network Defense:</strong> All external stream URLs are validated against Server-Side Request Forgery (SSRF) and checked against private IPv4/IPv6 ranges (RFC 1918, link-local, cloud metadata).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-5">
+                <h3 class="fw-bold text-white mb-3">Technology Stack</h3>
+                <p class="text-secondary" style="line-height: 1.8;">
+                    Built on modern, robust open-source principles:
+                </p>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-surface rounded-3 border border-secondary border-opacity-25">
+                            <h6 class="fw-bold text-cyan mb-1"><i class="bi bi-code-slash me-1"></i> .NET 10 & C#</h6>
+                            <p class="text-secondary small mb-0">High-performance ASP.NET Core MVC with Clean Architecture separation.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-surface rounded-3 border border-secondary border-opacity-25">
+                            <h6 class="fw-bold text-cyan mb-1"><i class="bi bi-database me-1"></i> EF Core & SQLite</h6>
+                            <p class="text-secondary small mb-0">Local lightweight persistence with indexing and full health history tracking.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-surface rounded-3 border border-secondary border-opacity-25">
+                            <h6 class="fw-bold text-cyan mb-1"><i class="bi bi-map me-1"></i> Leaflet.js</h6>
+                            <p class="text-secondary small mb-0">Responsive, dark/light-adaptive geographic mapping across India.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-surface rounded-3 border border-secondary border-opacity-25">
+                            <h6 class="fw-bold text-cyan mb-1"><i class="bi bi-play-circle me-1"></i> HLS & Snapshot Engine</h6>
+                            <p class="text-secondary small mb-0">Support for Hls.js, YouTube/authorized embeds, and auto-refreshing snapshot nodes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card bg-surface border-secondary border-opacity-25 sticky-top" style="top: 90px;">
+                <div class="card-body p-4 text-center">
+                    <div class="brand-dot mx-auto mb-3" style="width: 16px; height: 16px;"></div>
+                    <h5 class="fw-bold text-white mb-1">IndiaCam Explorer</h5>
+                    <div class="text-cyan small fw-semibold mb-3">Explore India, Live.</div>
+                    <p class="text-secondary small mb-4">
+                        Maintained as an open-source project by Shatrughna Ambhore.
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="https://github.com/shatru123/IndiaCam" target="_blank" rel="noopener noreferrer" class="btn btn-outline-cyan btn-sm">
+                            <i class="bi bi-github me-1"></i> View on GitHub
+                        </a>
+                        <a href="/Suggest" class="btn btn-cyan btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Suggest a Camera
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,94 @@
+@model IEnumerable<SourceProvider>
+@{
+    ViewData["Title"] = "Source Providers";
+}
+
+<div class="py-4 border-bottom border-secondary border-opacity-25 bg-surface">
+    <div class="container-xl">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a href="/Admin" class="text-secondary text-decoration-none">Admin</a></li>
+                        <li class="breadcrumb-item active text-cyan" aria-current="page">Providers</li>
+                    </ol>
+                </nav>
+                <h1 class="fw-bold mb-0 fs-2">Camera Source Providers</h1>
+            </div>
+            <form action="/Admin/TriggerSync" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-cyan btn-sm">
+                    <i class="bi bi-arrow-repeat me-1"></i> Synchronize All Providers Now
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container-xl py-4">
+    <div class="row g-4">
+        @foreach (var p in Model)
+        {
+            <div class="col-lg-6">
+                <div class="card bg-surface border-secondary border-opacity-25 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="badge bg-dark border border-secondary text-cyan font-monospace small mb-1">
+                                    @p.ProviderType
+                                </span>
+                                <h5 class="fw-bold text-white mb-0">@p.Name</h5>
+                            </div>
+                            @if (p.LastSyncStatus == ProviderSyncStatus.Success)
+                            {
+                                <span class="badge bg-success bg-opacity-25 text-success border border-success-subtle">
+                                    <span class="status-dot pulse bg-success me-1"></span> SYNC OK
+                                </span>
+                            }
+                            else if (p.LastSyncStatus == ProviderSyncStatus.Failed)
+                            {
+                                <span class="badge bg-danger bg-opacity-25 text-danger border border-danger-subtle">
+                                    FAILED
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary text-white">IDLE</span>
+                            }
+                        </div>
+
+                        <p class="text-secondary small mb-3">@p.Description</p>
+
+                        <div class="p-3 bg-card rounded-3 border border-secondary border-opacity-25 mb-3 small">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Website:</span>
+                                <a href="@p.WebsiteUrl" target="_blank" rel="noopener noreferrer" class="text-cyan text-decoration-none">
+                                    @p.WebsiteUrl <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </a>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Sync Schedule:</span>
+                                <span class="text-white">Every @p.SyncIntervalMinutes minutes</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Discovered Feeds:</span>
+                                <span class="text-cyan fw-bold">@p.DiscoveredCount cameras</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Last Sync:</span>
+                                <span class="text-white">@(p.LastSyncAt?.ToString("g") ?? "Never") UTC</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(p.LastSyncMessage))
+                        {
+                            <div class="text-muted small">
+                                <i class="bi bi-info-circle text-cyan me-1"></i>@p.LastSyncMessage
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
