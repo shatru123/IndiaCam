@@ -1,39 +1,48 @@
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Share Tech Mono', 'Courier New', monospace;
   
-  /* Dark Theme Tokens (Default) */
-  --bg-primary: #070b14;
-  --bg-surface: #0d1527;
-  --bg-surface-elevated: #131e36;
-  --bg-card: #0f182e;
-  --bg-input: #090e1a;
-  --border-color: #1e2d4d;
+  /* Hacker View / Cyber NOC Tokens (Default) */
+  --bg-primary: #04070e;
+  --bg-surface: #080d19;
+  --bg-surface-elevated: #0e1628;
+  --bg-card: #091020;
+  --bg-input: #040812;
+  --border-color: #12213a;
   --border-color-hover: #00f0ff;
   
-  --text-primary: #f8fafc;
+  --text-primary: #f0fdf4;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
+  
+  --hacker-green: #00ff66;
+  --hacker-green-rgb: 0, 255, 102;
+  --hacker-cyan: #00f0ff;
+  --hacker-cyan-rgb: 0, 240, 255;
+  --hacker-amber: #ffb703;
+  --hacker-red: #ff3366;
   
   --accent-cyan: #00f0ff;
   --accent-cyan-rgb: 0, 240, 255;
   --accent-teal: #06b6d4;
   --accent-blue: #3b82f6;
-  --accent-glow: 0 0 20px rgba(0, 240, 255, 0.22);
-  --accent-glow-subtle: 0 0 10px rgba(0, 240, 255, 0.15);
+  --accent-glow: 0 0 20px rgba(0, 240, 255, 0.35);
+  --accent-glow-subtle: 0 0 10px rgba(0, 240, 255, 0.2);
   
-  --status-online: #10b981;
-  --status-online-rgb: 16, 185, 129;
+  --status-online: #00ff66;
+  --status-online-rgb: 0, 255, 102;
   --status-degraded: #f59e0b;
   --status-degraded-rgb: 245, 158, 11;
-  --status-offline: #ef4444;
-  --status-offline-rgb: 239, 68, 68;
+  --status-offline: #ff3366;
+  --status-offline-rgb: 255, 51, 102;
 
-  --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-  --header-glass: rgba(7, 11, 20, 0.85);
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --hud-bracket-color: #00f0ff;
+  --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7);
+  --header-glass: rgba(4, 7, 14, 0.92);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 }
 
 [data-theme="light"] {
@@ -42,13 +51,15 @@
   --bg-surface-elevated: #f1f5f9;
   --bg-card: #ffffff;
   --bg-input: #f8fafc;
-  --border-color: #e2e8f0;
+  --border-color: #cbd5e1;
   --border-color-hover: #0284c7;
   
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   
+  --hacker-green: #059669;
+  --hacker-cyan: #0284c7;
   --accent-cyan: #0284c7;
   --accent-cyan-rgb: 2, 132, 199;
   --accent-teal: #0891b2;
@@ -56,13 +67,19 @@
   --accent-glow: 0 0 15px rgba(2, 132, 199, 0.15);
   --accent-glow-subtle: 0 0 8px rgba(2, 132, 199, 0.1);
   
+  --hud-bracket-color: #0284c7;
   --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --header-glass: rgba(255, 255, 255, 0.9);
+  --header-glass: rgba(255, 255, 255, 0.95);
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.06) 0%, transparent 60%),
+    linear-gradient(to right, rgba(0, 240, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
   color: var(--text-primary);
   margin: 0;
   padding: 0;
@@ -728,4 +745,368 @@ body {
 
 .footer-link:hover {
   color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   HACKER VIEW / TACTICAL CYBER NOC STYLES
+   ========================================================================== */
+
+/* Typography & Colors */
+.font-mono {
+  font-family: var(--font-mono) !important;
+}
+
+.text-hacker-green {
+  color: var(--hacker-green) !important;
+}
+
+.text-hacker-cyan {
+  color: var(--hacker-cyan) !important;
+}
+
+.text-hacker-amber {
+  color: var(--hacker-amber) !important;
+}
+
+/* CRT Scanline Surveillance Overlay */
+.crt-scanlines-active::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 99999;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* NOC Surveillance Telemetry Top Bar */
+.noc-telemetry-bar {
+  background: #020409;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.22);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.35rem 0;
+  color: #94a3b8;
+  letter-spacing: 0.06em;
+}
+
+.telemetry-beacon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--hacker-green);
+  font-weight: 700;
+}
+
+.beacon-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--hacker-green);
+  box-shadow: 0 0 8px var(--hacker-green);
+  animation: pulse-dot 1.2s infinite ease-in-out;
+}
+
+.telemetry-clock {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: 0.08em;
+}
+
+.telemetry-clock .clock-label {
+  color: var(--hacker-cyan);
+  font-size: 0.68rem;
+}
+
+.badge-terminal-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.08);
+  color: var(--hacker-cyan);
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+/* Tactical HUD Framing & Corner Brackets */
+.hud-framed {
+  position: relative;
+}
+
+.hud-bracket {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 5;
+  border-color: var(--hud-bracket-color);
+  border-style: solid;
+  transition: all 0.25s ease;
+}
+
+.hud-bracket-tl { top: 4px; left: 4px; border-width: 2px 0 0 2px; }
+.hud-bracket-tr { top: 4px; right: 4px; border-width: 2px 2px 0 0; }
+.hud-bracket-bl { bottom: 4px; left: 4px; border-width: 0 0 2px 2px; }
+.hud-bracket-br { bottom: 4px; right: 4px; border-width: 0 2px 2px 0; }
+
+.cam-card:hover .hud-bracket {
+  border-color: var(--hacker-green);
+  box-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
+}
+
+/* Tactical Targeting Reticle on Media */
+.hud-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border: 1px dashed rgba(0, 240, 255, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 3;
+}
+
+.hud-crosshair::before, .hud-crosshair::after {
+  content: "";
+  position: absolute;
+  background: rgba(0, 240, 255, 0.7);
+}
+
+.hud-crosshair::before { top: 50%; left: -6px; right: -6px; height: 1px; }
+.hud-crosshair::after { left: 50%; top: -6px; bottom: -6px; width: 1px; }
+
+.cam-card:hover .hud-crosshair {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.hud-node-badge {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  background: rgba(4, 7, 14, 0.88);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  color: var(--hacker-cyan);
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  z-index: 2;
+  letter-spacing: 0.05em;
+}
+
+.hud-telemetry-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #94a3b8;
+  background: #040812;
+  padding: 0.3rem 0.75rem;
+  border-top: 1px solid rgba(0, 240, 255, 0.15);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  letter-spacing: 0.04em;
+}
+
+/* Tactical Action Buttons & Links */
+.tactical-link-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--hacker-cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: 3px;
+  background: rgba(0, 240, 255, 0.06);
+  transition: all 0.2s ease;
+}
+
+.tactical-link-btn:hover {
+  color: #04070e;
+  background: var(--hacker-cyan);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+}
+
+.btn-tactical-cyan {
+  background: var(--hacker-cyan);
+  color: #04070e;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1px solid var(--hacker-cyan);
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+}
+
+.btn-tactical-cyan:hover {
+  background: #4df4ff;
+  color: #04070e;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.7);
+}
+
+.btn-tactical-outline {
+  background: transparent;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: var(--hacker-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.btn-tactical-outline:hover, .btn-tactical-outline.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--hacker-cyan);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+}
+
+.btn-tactical-chip {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background: rgba(8, 13, 25, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #cbd5e1;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-tactical-chip:hover {
+  border-color: var(--hacker-cyan);
+  color: var(--hacker-cyan);
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.btn-tactical-chip-cyan {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--hacker-cyan);
+  color: var(--hacker-cyan);
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.btn-tactical-chip-cyan:hover {
+  background: var(--hacker-cyan);
+  color: #04070e;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.tactical-search-box {
+  background: #060a16;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.form-control-tactical {
+  background: transparent;
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.form-control-tactical:focus {
+  background: transparent;
+  color: #f8fafc;
+  box-shadow: none;
+}
+
+/* Radar Markers for Leaflet Map */
+.radar-ping-marker {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-center-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  z-index: 2;
+  background-color: var(--hacker-cyan);
+  box-shadow: 0 0 8px var(--hacker-cyan);
+}
+
+.radar-ping-marker.online .radar-center-dot {
+  background-color: var(--hacker-green);
+  box-shadow: 0 0 10px var(--hacker-green);
+}
+
+.radar-ping-marker.offline .radar-center-dot {
+  background-color: var(--hacker-red);
+  box-shadow: 0 0 8px var(--hacker-red);
+}
+
+.radar-pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--hacker-cyan);
+  animation: radar-ping 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  pointer-events: none;
+}
+
+.radar-ping-marker.online .radar-pulse-ring {
+  border-color: var(--hacker-green);
+}
+
+@keyframes radar-ping {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.0); opacity: 0; }
+}
+
+/* Tactical Player HUD Viewport */
+.hud-player-wrapper {
+  background: #060a16;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hud-player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  background: #020409;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  font-size: 0.8rem;
+}
+
+.hud-player-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  background: #020409;
+  border-top: 1px solid rgba(0, 240, 255, 0.2);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94a3b8;
 }

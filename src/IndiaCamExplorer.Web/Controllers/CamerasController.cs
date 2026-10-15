@@ -44,7 +44,7 @@ public class CamerasController : Controller
             ActiveState = filterParams.State
         };
 
-        return View(vm);
+        return View("Index", vm);
     }
 
     public async Task<IActionResult> Details(string slug)

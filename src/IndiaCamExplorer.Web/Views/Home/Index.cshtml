@@ -7,68 +7,68 @@
 <section class="hero-section text-center">
     <div class="container-xl">
         <div class="hero-tag">
-            <span class="status-dot pulse" style="background-color: var(--accent-cyan);"></span>
-            <span>Real-Time Public Streams & Viewpoints</span>
+            <span class="status-dot pulse" style="background-color: var(--hacker-green);"></span>
+            <span>&gt; NOC SURVEILLANCE MATRIX // 36 SENSORS ACTIVE // LIVE INTERCEPT</span>
         </div>
 
         <h1 class="hero-title">
-            Explore <span>India, Live.</span>
+            NATIONAL PUBLIC <span>SURVEILLANCE MATRIX</span>
         </h1>
 
         <p class="hero-subtitle">
-            Immerse yourself in live temple darshans, Himalayan viewpoints, coastal horizons, and smart-city transit cams across 36 Indian States and Union Territories.
+            Tactical live reconnaissance across India. Live temple darshans, Himalayan viewpoints, coastal naval vistas, and municipal transit cameras across 36 Indian States and Union Territories.
         </p>
 
         <!-- Hero Search -->
         <div class="row justify-content-center mb-4">
-            <div class="col-lg-6 col-md-8">
+            <div class="col-lg-7 col-md-9">
                 <form action="/Cameras" method="get">
-                    <div class="input-group shadow-lg" style="border-radius: var(--radius-md); overflow: hidden;">
-                        <span class="input-group-text bg-surface border-0 text-cyan ps-3">
-                            <i class="bi bi-search fs-5"></i>
+                    <div class="input-group tactical-search-box shadow-lg">
+                        <span class="input-group-text bg-transparent border-0 text-hacker-cyan ps-3">
+                            <i class="bi bi-terminal fs-5"></i>
                         </span>
                         <input type="text" 
                                name="Search" 
-                               class="form-control form-control-custom border-0 py-3 ps-2" 
-                               placeholder="Search Varanasi, Shimla, Somnath, traffic..." 
+                               class="form-control form-control-tactical border-0 py-3 ps-2" 
+                               placeholder="INTERCEPT BY STATE, CITY, STREAM TAG, OR SENSOR ID..." 
                                aria-label="Search cameras">
-                        <button class="btn btn-cyan px-4" type="submit">
-                            Explore
+                        <button class="btn btn-tactical-cyan px-4" type="submit">
+                            <i class="bi bi-crosshair me-1"></i> SCAN MATRIX
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Quick Category Pills -->
+        <!-- Quick Category Matrix Pills -->
         <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
-            <a href="/Cameras" class="btn btn-surface btn-sm"><i class="bi bi-collection me-1"></i> All Cameras</a>
+            <a href="/Cameras" class="btn btn-tactical-chip btn-sm"><i class="bi bi-grid-3x3-gap me-1"></i> [ALL SENSORS]</a>
             @foreach (var cat in Model.Categories.Take(5))
             {
-                <a href="/Cameras/Category/@cat.Slug" class="btn btn-surface btn-sm">
-                    @cat.Name (@cat.CameraCount)
+                <a href="/Cameras/Category/@cat.Slug" class="btn btn-tactical-chip btn-sm">
+                    [@cat.Name.ToUpperInvariant() : @cat.CameraCount]
                 </a>
             }
-            <a href="/Map" class="btn btn-outline-cyan btn-sm"><i class="bi bi-map me-1"></i> Open Live Map</a>
+            <a href="/Map" class="btn btn-tactical-chip-cyan btn-sm"><i class="bi bi-radar me-1"></i> [TACTICAL RADAR]</a>
         </div>
 
         <!-- Real-Time Stats Bar -->
         <div class="stats-bar">
             <div class="stat-item">
-                <i class="bi bi-camera-video-fill text-cyan"></i>
-                <span><span class="stat-value">@Model.TotalCameras</span> Verified Feeds</span>
+                <i class="bi bi-camera-video-fill text-hacker-cyan"></i>
+                <span><span class="stat-value font-mono">@Model.TotalCameras</span> VERIFIED NODES</span>
             </div>
             <div class="stat-item">
                 <span class="status-dot pulse bg-success"></span>
-                <span><span class="stat-value">@Model.OnlineCameras</span> Streams Online</span>
+                <span><span class="stat-value font-mono text-hacker-green">@Model.OnlineCameras</span> STREAMS ONLINE</span>
             </div>
             <div class="stat-item">
-                <i class="bi bi-geo-alt-fill text-cyan"></i>
-                <span><span class="stat-value">@Model.TotalStates</span> States & UTs</span>
+                <i class="bi bi-geo-alt-fill text-hacker-cyan"></i>
+                <span><span class="stat-value font-mono">@Model.TotalStates</span> STATES &amp; UTs</span>
             </div>
             <div class="stat-item">
-                <i class="bi bi-shield-check text-cyan"></i>
-                <span><span class="stat-value">100%</span> Public & Authorized</span>
+                <i class="bi bi-shield-check text-hacker-green"></i>
+                <span><span class="stat-value font-mono">100%</span> PUBLIC &amp; ETHICAL</span>
             </div>
         </div>
     </div>

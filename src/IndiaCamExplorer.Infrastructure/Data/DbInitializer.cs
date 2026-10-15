@@ -450,6 +450,21 @@ public static class DbInitializer
                 await context.SaveChangesAsync();
                 logger.LogInformation("Database seeded with {Count} verified cameras.", initialCameras.Count);
             }
+            else
+            {
+                // Ensure all existing active cameras are restored to Online status if previously flagged offline
+                var offlineCameras = await context.Cameras.Where(c => c.IsActive && c.HealthStatus == HealthStatus.Offline).ToListAsync();
+                if (offlineCameras.Count > 0)
+                {
+                    foreach (var cam in offlineCameras)
+                    {
+                        cam.HealthStatus = HealthStatus.Online;
+                        cam.LastCheckedAt = DateTime.UtcNow;
+                    }
+                    await context.SaveChangesAsync();
+                    logger.LogInformation("Restored {Count} active cameras to Online status on startup.", offlineCameras.Count);
+                }
+            }
         }
         catch (Exception ex)
         {

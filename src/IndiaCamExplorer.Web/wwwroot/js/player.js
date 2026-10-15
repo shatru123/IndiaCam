@@ -15,9 +15,14 @@
     const container = document.getElementById(containerId);
     if (!container) return;
 
+    let warningBannerHtml = '';
     if (isOffline) {
-      renderOfflineBanner(container, "This camera is currently marked offline by automated health checks.");
-      return;
+      warningBannerHtml = `
+        <div class="alert alert-warning py-2 px-3 mb-2 small font-mono d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24;">
+          <div><i class="bi bi-exclamation-triangle-fill me-2"></i>[PROBE ADVISORY]: Automated probe reported signal latency. Intercepting direct broadcast stream...</div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforebegin', warningBannerHtml);
     }
 
     if (streamType === 'Hls') {

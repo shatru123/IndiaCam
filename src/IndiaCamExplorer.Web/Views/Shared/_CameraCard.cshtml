@@ -1,31 +1,41 @@
 @model Camera
 
-<div class="cam-card">
+<div class="cam-card hud-framed">
+    <!-- Tactical Corner HUD Brackets -->
+    <div class="hud-bracket hud-bracket-tl"></div>
+    <div class="hud-bracket hud-bracket-tr"></div>
+    <div class="hud-bracket hud-bracket-bl"></div>
+    <div class="hud-bracket hud-bracket-br"></div>
+
     <div class="cam-card-media">
-        <a href="/cameras/@Model.Slug">
+        <a href="/cameras/@Model.Slug" aria-label="View stream for @Model.Title">
             <img class="cam-card-img" 
                  src="@(string.IsNullOrEmpty(Model.ThumbnailUrl) ? "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80" : Model.ThumbnailUrl)" 
                  alt="@Model.Title"
                  loading="lazy" />
         </a>
+
+        <!-- Tactical Targeting Reticle on hover -->
+        <div class="hud-crosshair"></div>
+
         <div class="cam-badges-overlay">
             <div class="d-flex align-items-center gap-1">
                 @if (Model.HealthStatus == HealthStatus.Online)
                 {
-                    <span class="badge-status online">
-                        <span class="status-dot pulse"></span> LIVE
+                    <span class="badge-status online" title="Active live stream verified">
+                        <span class="status-dot pulse"></span> [REC ●] LIVE
                     </span>
                 }
                 else if (Model.HealthStatus == HealthStatus.Degraded)
                 {
-                    <span class="badge-status degraded">
-                        <span class="status-dot"></span> SLOW
+                    <span class="badge-status degraded" title="Elevated response latency">
+                        <span class="status-dot"></span> [SLOW]
                     </span>
                 }
                 else
                 {
-                    <span class="badge-status offline">
-                        <span class="status-dot"></span> OFFLINE
+                    <span class="badge-status offline" title="Endpoint unresponsive">
+                        <span class="status-dot"></span> [OFFLINE]
                     </span>
                 }
 
@@ -35,16 +45,27 @@
             <button class="btn-favorite-heart" 
                     data-camera-id="@Model.Id" 
                     data-camera-title="@Model.Title"
-                    title="Add to Favorites"
+                    title="Add to Tactical Watchlist"
                     aria-label="Favorite">
                 <i class="bi bi-heart"></i>
             </button>
         </div>
+
+        <!-- Node ID and State Code Badge -->
+        <div class="hud-node-badge">
+            #NODE-@Model.Id.ToString("D3") // IN-@(Model.State.Length >= 2 ? Model.State.Substring(0, 2).ToUpperInvariant() : "IN")
+        </div>
+    </div>
+
+    <!-- Telemetry strip under video -->
+    <div class="hud-telemetry-strip">
+        <span><i class="bi bi-crosshair text-hacker-cyan me-1"></i>@Model.Latitude.ToString("F3")°N, @Model.Longitude.ToString("F3")°E</span>
+        <span class="text-hacker-green"><i class="bi bi-shield-lock-fill me-1"></i>ENC: TLS 1.3</span>
     </div>
 
     <div class="cam-card-body">
         <div class="cam-meta-tag">
-            <i class="bi bi-geo-alt-fill"></i> @Model.City, @Model.State
+            <i class="bi bi-geo-alt-fill text-hacker-cyan"></i> @Model.City, @Model.State
         </div>
 
         <a href="/cameras/@Model.Slug" class="cam-title">@Model.Title</a>
@@ -56,10 +77,10 @@
 
         <div class="cam-footer">
             <span class="cam-attribution" title="@Model.Attribution">
-                <i class="bi bi-shield-check text-cyan me-1"></i>@Model.Attribution
+                <i class="bi bi-shield-check text-hacker-cyan me-1"></i>@Model.Attribution
             </span>
-            <a href="/cameras/@Model.Slug" class="text-cyan fw-bold text-decoration-none">
-                Watch <i class="bi bi-arrow-right"></i>
+            <a href="/cameras/@Model.Slug" class="tactical-link-btn">
+                <span>INTERCEPT</span> <i class="bi bi-arrow-right-short"></i>
             </a>
         </div>
     </div>

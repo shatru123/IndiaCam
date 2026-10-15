@@ -7,24 +7,35 @@
 <div class="container-xl py-3">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
         <div>
-            <h1 class="fw-bold mb-0 fs-3">Interactive India Live Map</h1>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="status-dot pulse bg-success"></span>
+                <span class="font-mono text-hacker-green small fw-bold">[RADAR ACTIVE] // SECTOR: INDIA-ALL</span>
+            </div>
+            <h1 class="fw-bold mb-0 fs-3">TACTICAL RADAR SURVEILLANCE MAP</h1>
             <p class="text-secondary mb-0 small">
-                Explore real-time viewpoints and coastal webcams across India. Click pins to preview feeds.
+                Geospatial sensory recon and verified municipal webcams across India.
             </p>
         </div>
-        <div class="d-flex gap-2">
-            <span class="badge bg-surface border border-secondary border-opacity-25 text-white d-flex align-items-center gap-1 px-3 py-2">
+        <div class="d-flex align-items-center gap-2">
+            <div class="font-mono text-hacker-cyan bg-surface border border-secondary border-opacity-25 px-3 py-2 rounded-2 small">
+                <i class="bi bi-crosshair me-1"></i> <span id="map-radar-coords">LAT: 22.3511°N // LON: 78.6677°E</span>
+            </div>
+            <span class="badge bg-surface border border-secondary border-opacity-25 text-white d-flex align-items-center gap-1 px-3 py-2 font-mono">
                 <span class="status-dot pulse bg-success"></span>
-                <span id="map-visible-count">0</span> Cameras Mapped
+                <span id="map-visible-count">0</span> SENSORS
             </span>
-            <a href="/Cameras" class="btn btn-surface btn-sm">
-                <i class="bi bi-grid me-1"></i> List View
+            <a href="/Cameras" class="btn btn-tactical-outline btn-sm">
+                <i class="bi bi-grid-3x3-gap me-1"></i> LIST VIEW
             </a>
         </div>
     </div>
 
-    <!-- Map Viewport Container -->
-    <div class="position-relative">
+    <!-- Map Viewport Container with Tactical HUD Brackets -->
+    <div class="position-relative hud-framed">
+        <div class="hud-bracket hud-bracket-tl"></div>
+        <div class="hud-bracket hud-bracket-tr"></div>
+        <div class="hud-bracket hud-bracket-bl"></div>
+        <div class="hud-bracket hud-bracket-br"></div>
         <div id="india-map-container"></div>
 
         <!-- Overlaid Map Filters -->

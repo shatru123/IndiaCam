@@ -31,18 +31,22 @@
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="status-dot pulse bg-success"></span>
+                    <span class="font-mono text-hacker-green small fw-bold">[FEED RECON DIRECTORY]</span>
+                </div>
                 <h1 class="fw-bold mb-1 fs-2">@title</h1>
                 <p class="text-secondary mb-0 small">
-                    Showing @Model.PagedCameras.Items.Count() of @Model.PagedCameras.TotalItems verified public streams across India.
+                    Showing <span class="text-hacker-cyan font-mono fw-bold">@Model.PagedCameras.Items.Count()</span> of <span class="text-hacker-green font-mono fw-bold">@Model.PagedCameras.TotalItems</span> verified public surveillance streams across India.
                 </p>
             </div>
 
             <div class="d-flex align-items-center gap-2">
-                <a href="/Map" class="btn btn-outline-cyan btn-sm">
-                    <i class="bi bi-map me-1"></i> View on Live Map
+                <a href="/Map" class="btn btn-tactical-outline btn-sm">
+                    <i class="bi bi-radar me-1"></i> [TACTICAL RADAR]
                 </a>
-                <a href="/Suggest" class="btn btn-cyan btn-sm">
-                    <i class="bi bi-plus-circle me-1"></i> Submit Stream
+                <a href="/Suggest" class="btn btn-tactical-cyan btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i> [SUBMIT FEED]
                 </a>
             </div>
         </div>

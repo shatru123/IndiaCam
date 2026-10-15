@@ -62,24 +62,32 @@
       console.error('Error fetching map markers:', err);
     }
 
+    // Track mouse coordinates on radar map
+    mapInstance.on('mousemove', (e) => {
+      const coordEl = document.getElementById('map-radar-coords');
+      if (coordEl) {
+        coordEl.textContent = `LAT: ${e.latlng.lat.toFixed(4)}°N // LON: ${e.latlng.lng.toFixed(4)}°E`;
+      }
+    });
+
     initFilterToolbar();
   };
 
   function createCustomIcon(marker) {
     const isOnline = marker.healthStatus === 1; // HealthStatus.Online
-    const dotClass = isOnline ? 'bg-success' : 'bg-danger';
+    const statusClass = isOnline ? 'online' : 'offline';
 
     return L.divIcon({
-      className: 'custom-map-pin',
+      className: 'radar-map-pin',
       html: `
-        <div style="position: relative; width: 32px; height: 32px; background: #070b14; border: 2px solid #00f0ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);">
-          <i class="bi bi-camera-video-fill" style="color: #00f0ff; font-size: 14px;"></i>
-          <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; border-radius: 50%;" class="${dotClass}"></span>
+        <div class="radar-ping-marker ${statusClass}" title="${marker.title}">
+          <div class="radar-pulse-ring"></div>
+          <div class="radar-center-dot"></div>
         </div>
       `,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -18]
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
+      popupAnchor: [0, -16]
     });
   }
 

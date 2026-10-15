@@ -73,7 +73,11 @@ builder.Services.AddSingleton<CameraSyncBackgroundService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<CameraSyncBackgroundService>());
 builder.Services.AddHostedService<CameraHealthCheckBackgroundService>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 var app = builder.Build();
 
